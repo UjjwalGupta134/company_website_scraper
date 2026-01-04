@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Company Website Scraper</title>
+  <style>
+    body { font-family: Arial; background:#f4f4f4; padding:40px; }
+    .box { max-width:700px; margin:auto; background:#fff; padding:20px; border-radius:6px; }
+    input { width:100%; padding:10px; margin-bottom:10px; }
+    button { padding:10px 20px; }
+    pre { background:#111; color:#0f0; padding:15px; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Company Website Scraper</h2>
+    <input id="url" placeholder="Enter company website URL" />
+    <button onclick="scrape()">Scrape</button>
+    <pre id="out"></pre>
+  </div>
+
+<script>
+async function scrape(){
+  const url = document.getElementById("url").value;
+  document.getElementById("out").textContent = "Scraping...";
+  const r = await fetch("/scrape", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ url })
+  });
+  const data = await r.json();
+  document.getElementById("out").textContent = JSON.stringify(data, null, 2);
+}
+</script>
+</body>
+</html>

@@ -1,6 +1,9 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
+class ScrapeRequest(BaseModel):
+    website: str
+    
 class CompanyProfile(BaseModel):
     website: str
     company_name: Optional[str] = None
@@ -9,3 +12,4 @@ class CompanyProfile(BaseModel):
     proof_signals: List[str] = []
     contact_page: Optional[str] = None
     careers_page: Optional[str] = None
+

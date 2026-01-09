@@ -61,6 +61,29 @@ ul {
 
 a {
   color: #0066cc;
+  /* Loading spinner */
+.loading {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #555;
+}
+
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: 3px solid #ccc;
+  border-top: 3px solid #0066cc;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 }
 </style>
 </head>
@@ -69,6 +92,11 @@ a {
     <h2>Company Website Scraper</h2>
     <input id="url" type="text" placeholder="Enter company website URL" />
     <button onclick="scrape()">Scrape</button>
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+      <p>Scraping website...</p>
+    </div>
+
     <div id="result" class="card hidden">
   <h2 id="company-name"></h2>
 
@@ -91,48 +119,67 @@ a {
 async function scrape() {
   const url = document.getElementById("url").value;
   const result = document.getElementById("result");
+  const loading = document.getElementById("loading");
+  const button = document.querySelector("button");
 
+  // Reset UI
   result.classList.add("hidden");
+  loading.classList.remove("hidden");
+  button.disabled = true;
 
-  const response = await fetch("/scrape", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ website: url })
-  });
+  try {
+    const response = await fetch("/scrape", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ website: url })
+    });
 
-  const data = await response.json();
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
+    }
 
-  document.getElementById("company-name").innerText =
-    data.company_name || "Unknown Company";
+    const data = await response.json();
 
-  const websiteEl = document.getElementById("company-website");
-  websiteEl.innerText = data.website;
-  websiteEl.href = data.website;
+    // Fill UI
+    document.getElementById("company-name").innerText =
+      data.company_name || "Unknown Company";
 
-  document.getElementById("what-they-do").innerText =
-    data.what_they_do || "Not found";
+    const websiteEl = document.getElementById("company-website");
+    websiteEl.innerText = data.website;
+    websiteEl.href = data.website;
 
-  const offerings = document.getElementById("offerings");
-  offerings.innerHTML = "";
-  (data.offerings || []).forEach(o => {
-    const li = document.createElement("li");
-    li.innerText = o;
-    offerings.appendChild(li);
-  });
+    document.getElementById("what-they-do").innerText =
+      data.what_they_do || "Not found";
 
-  const links = document.getElementById("links");
-  links.innerHTML = "";
-  if (data.contact_page) {
-    links.innerHTML += `<li><a href="${data.contact_page}" target="_blank">Contact</a></li>`;
+    const offerings = document.getElementById("offerings");
+    offerings.innerHTML = "";
+    (data.offerings || []).forEach(item => {
+      const li = document.createElement("li");
+      li.innerText = item;
+      offerings.appendChild(li);
+    });
+
+    const links = document.getElementById("links");
+    links.innerHTML = "";
+    if (data.contact_page) {
+      links.innerHTML += `<li><a href="${data.contact_page}" target="_blank">Contact</a></li>`;
+    }
+    if (data.careers_page) {
+      links.innerHTML += `<li><a href="${data.careers_page}" target="_blank">Careers</a></li>`;
+    }
+
+    result.classList.remove("hidden");
+
+  } catch (error) {
+    alert("Failed to scrape website. Please check the URL and try again.");
+  } finally {
+    loading.classList.add("hidden");
+    button.disabled = false;
   }
-  if (data.careers_page) {
-    links.innerHTML += `<li><a href="${data.careers_page}" target="_blank">Careers</a></li>`;
-  }
-
-  result.classList.remove("hidden");
 }
 </script>
 </body>
 </html>
+
 
 

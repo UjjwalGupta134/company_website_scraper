@@ -87,6 +87,19 @@ a {
   border-radius: 6px;
   font-weight: 500;
 }
+  .copy-btn {
+  margin-top: 15px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: #28a745;
+  color: white;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: #1e7e34;
+}
 
 @keyframes spin {
   to {
@@ -108,6 +121,8 @@ a {
     </div>
 
     <div id="result" class="card hidden">
+      <button id="copyBtn" class="copy-btn hidden">Copy JSON</button>
+
   <h2 id="company-name"></h2>
 
   <p><strong>Website:</strong>
@@ -125,6 +140,8 @@ a {
   </div>
   </div>
 <script>
+  let lastScrapedData = null;
+
   document.addEventListener("DOMContentLoaded", () => {
   const scrapeBtn = document.getElementById("scrapeBtn");
   scrapeBtn.addEventListener("click", scrape);
@@ -160,6 +177,8 @@ async function scrape() {
     }
 
     const data = await response.json();
+    lastScrapedData = data;
+    document.getElementById("copyBtn").classList.remove("hidden");
     renderResult(data);
     result.classList.remove("hidden");
 
@@ -171,6 +190,20 @@ async function scrape() {
     button.disabled = false;
   }
 }
+  document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("copyBtn").addEventListener("click", () => {
+    if (!lastScrapedData) return;
+
+    navigator.clipboard.writeText(
+      JSON.stringify(lastScrapedData, null, 2)
+    );
+
+    const btn = document.getElementById("copyBtn");
+    btn.innerText = "Copied!";
+    setTimeout(() => (btn.innerText = "Copy JSON"), 1500);
+  });
+});
+
   function renderResult(data) {
   document.getElementById("company-name").innerText =
     data.company_name || "Unknown Company";
@@ -203,6 +236,7 @@ async function scrape() {
 </script>
 </body>
 </html>
+
 
 
 

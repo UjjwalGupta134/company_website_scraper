@@ -125,27 +125,22 @@ a {
   </div>
   </div>
 <script>
-  async function scrape() {
-    alert("scrape() called");
-  const url = document.getElementById("url").value.trim;
+async function scrape() {
+  let url = document.getElementById("url").value.trim();
 
-  //Autofixing of URLS:
-  if (!url.startsWith("http://") && !url.startsWith("https://")){
-    url = "https://"+url;}
+  // Auto-fix URL
+  if (!url.startsWith("http://") && !url.startsWith("https://")) {
+    url = "https://" + url;
+  }
+
   const errorBox = document.getElementById("error");
   const result = document.getElementById("result");
   const loading = document.getElementById("loading");
   const button = document.querySelector("button");
 
+  // Reset UI
   errorBox.classList.add("hidden");
   result.classList.add("hidden");
-
-  if (!url) {
-    errorBox.textContent = "Please enter a website URL.";
-    errorBox.classList.remove("hidden");
-    return;
-  }
-
   loading.classList.remove("hidden");
   button.disabled = true;
 
@@ -157,7 +152,7 @@ a {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to scrape");
+      throw new Error("Request failed");
     }
 
     const data = await response.json();
@@ -175,6 +170,7 @@ a {
 </script>
 </body>
 </html>
+
 
 
 

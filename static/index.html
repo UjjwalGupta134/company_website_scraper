@@ -1,18 +1,39 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Company Website Scraper</title>
+  <title>
+    <h2>Company Website Scraper</h2>
+    <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
+  </title>
 <style>
+  :root {
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #000000;
+  --border: #dddddd;
+  --primary: #0066cc;
+}
+
+body.dark {
+  --bg: #121212;
+  --card: #1e1e1e;
+  --text: #ffffff;
+  --border: #333333;
+  --primary: #4dabf7;
+}
+
 body {
   font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  background: var(--bg);
+  color: var(--text);
   padding: 40px;
 }
 
 .container {
   max-width: 800px;
   margin: auto;
-  background: #ffffff;
+  background: var(--card);
+  border: 1px solid var(--border);
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0,0,0,0.08);
@@ -46,7 +67,8 @@ button:hover {
 .card {
   margin-top: 25px;
   padding: 20px;
-  background: #fafafa;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 8px;
   border: 1px solid #ddd;
 }
@@ -60,7 +82,7 @@ ul {
 }
 
 a {
-  color: #0066cc;
+  color: var(--primary);
   /* Loading spinner */
 .loading {
   margin-top: 15px;
@@ -99,6 +121,15 @@ a {
 
 .copy-btn:hover {
   background: #1e7e34;
+}
+  .theme-btn {
+  float: right;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: white;
 }
 
 @keyframes spin {
@@ -145,6 +176,24 @@ a {
   document.addEventListener("DOMContentLoaded", () => {
   const scrapeBtn = document.getElementById("scrapeBtn");
   scrapeBtn.addEventListener("click", scrape);
+});
+document.addEventListener("DOMContentLoaded", () => {
+  const toggle = document.getElementById("themeToggle");
+
+  // Load saved preference
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark");
+    toggle.innerText = "☀️ Light Mode";
+  }
+
+  toggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark");
+
+    const isDark = document.body.classList.contains("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+
+    toggle.innerText = isDark ? "☀️ Light Mode" : "🌙 Dark Mode";
+  });
 });
 
 async function scrape() {
@@ -236,6 +285,7 @@ async function scrape() {
 </script>
 </body>
 </html>
+
 
 
 

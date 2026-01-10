@@ -78,6 +78,15 @@ a {
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+  .error {
+  margin-top: 15px;
+  padding: 12px;
+  background: #ffe6e6;
+  color: #a40000;
+  border: 1px solid #ffb3b3;
+  border-radius: 6px;
+  font-weight: 500;
+}
 
 @keyframes spin {
   to {
@@ -92,6 +101,7 @@ a {
     <h2>Company Website Scraper</h2>
     <input id="url" type="text" placeholder="Enter company website URL" />
     <button onclick="scrape()">Scrape</button>
+    <div id="error" class="error hidden"></div>
     <div id="loading" class="loading hidden">
       <div class="spinner"></div>
       <p>Scraping website...</p>
@@ -114,16 +124,23 @@ a {
   <ul id="links"></ul>
 </div>
   </div>
-
 <script>
 async function scrape() {
   const url = document.getElementById("url").value;
+  const errorBox = document.getElementById("error");
   const result = document.getElementById("result");
   const loading = document.getElementById("loading");
   const button = document.querySelector("button");
 
-  // Reset UI
+  errorBox.classList.add("hidden");
   result.classList.add("hidden");
+
+  if (!url) {
+    errorBox.textContent = "Please enter a website URL.";
+    errorBox.classList.remove("hidden");
+    return;
+  }
+
   loading.classList.remove("hidden");
   button.disabled = true;
 
@@ -135,43 +152,16 @@ async function scrape() {
     });
 
     if (!response.ok) {
-      throw new Error("Network response was not ok");
+      throw new Error("Failed to scrape");
     }
 
     const data = await response.json();
-
-    // Fill UI
-    document.getElementById("company-name").innerText =
-      data.company_name || "Unknown Company";
-
-    const websiteEl = document.getElementById("company-website");
-    websiteEl.innerText = data.website;
-    websiteEl.href = data.website;
-
-    document.getElementById("what-they-do").innerText =
-      data.what_they_do || "Not found";
-
-    const offerings = document.getElementById("offerings");
-    offerings.innerHTML = "";
-    (data.offerings || []).forEach(item => {
-      const li = document.createElement("li");
-      li.innerText = item;
-      offerings.appendChild(li);
-    });
-
-    const links = document.getElementById("links");
-    links.innerHTML = "";
-    if (data.contact_page) {
-      links.innerHTML += `<li><a href="${data.contact_page}" target="_blank">Contact</a></li>`;
-    }
-    if (data.careers_page) {
-      links.innerHTML += `<li><a href="${data.careers_page}" target="_blank">Careers</a></li>`;
-    }
-
+    renderResult(data);
     result.classList.remove("hidden");
 
-  } catch (error) {
-    alert("Failed to scrape website. Please check the URL and try again.");
+  } catch (err) {
+    errorBox.textContent = "Unable to scrape this website.";
+    errorBox.classList.remove("hidden");
   } finally {
     loading.classList.add("hidden");
     button.disabled = false;
@@ -180,6 +170,7 @@ async function scrape() {
 </script>
 </body>
 </html>
+
 
 
 

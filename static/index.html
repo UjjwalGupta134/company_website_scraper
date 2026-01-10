@@ -167,9 +167,39 @@ async function scrape() {
     button.disabled = false;
   }
 }
+  function renderResult(data) {
+  document.getElementById("company-name").innerText =
+    data.company_name || "Unknown Company";
+
+  const websiteEl = document.getElementById("company-website");
+  websiteEl.innerText = data.website;
+  websiteEl.href = data.website;
+
+  document.getElementById("what-they-do").innerText =
+    data.what_they_do || "Not found";
+
+  const offerings = document.getElementById("offerings");
+  offerings.innerHTML = "";
+  (data.offerings || []).forEach(item => {
+    const li = document.createElement("li");
+    li.innerText = item;
+    offerings.appendChild(li);
+  });
+
+  const links = document.getElementById("links");
+  links.innerHTML = "";
+
+  if (data.contact_page) {
+    links.innerHTML += `<li><a href="${data.contact_page}" target="_blank">Contact</a></li>`;
+  }
+  if (data.careers_page) {
+    links.innerHTML += `<li><a href="${data.careers_page}" target="_blank">Careers</a></li>`;
+  }
+}
 </script>
 </body>
 </html>
+
 
 
 

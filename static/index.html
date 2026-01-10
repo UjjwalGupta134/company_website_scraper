@@ -100,7 +100,7 @@ a {
   <div class="container">
     <h2>Company Website Scraper</h2>
     <input id="url" type="text" placeholder="Enter company website (e.g. stripe.com)" />
-    <button type="button" onclick="scrape()">Scrape</button>
+    <button type="button" id="scrapeBtn">Scrape</button>
     <div id="error" class="error hidden"></div>
     <div id="loading" class="loading hidden">
       <div class="spinner"></div>
@@ -125,9 +125,13 @@ a {
   </div>
   </div>
 <script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const scrapeBtn = document.getElementById("scrapeBtn");
+  scrapeBtn.addEventListener("click", scrape);
+});
+
 async function scrape() {
   let url = document.getElementById("url").value.trim();
-
   // Auto-fix URL
   if (!url.startsWith("http://") && !url.startsWith("https://")) {
     url = "https://" + url;
@@ -199,6 +203,7 @@ async function scrape() {
 </script>
 </body>
 </html>
+
 
 
 

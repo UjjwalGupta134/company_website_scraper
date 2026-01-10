@@ -100,7 +100,7 @@ a {
   <div class="container">
     <h2>Company Website Scraper</h2>
     <input id="url" type="text" placeholder="Enter company website (e.g. stripe.com)" />
-    <button type="button" onclick="alert('clicked')">Scrape</button>
+    <button type="button" onclick="scrape()">Scrape</button>
     <div id="error" class="error hidden"></div>
     <div id="loading" class="loading hidden">
       <div class="spinner"></div>
@@ -125,7 +125,7 @@ a {
   </div>
   </div>
 <script>
-  console.log("Script loaded");
+  alert("JS LOADED");
   async function scrape() {
   const url = document.getElementById("url").value.trim;
 
@@ -175,6 +175,7 @@ a {
 </script>
 </body>
 </html>
+
 
 
 

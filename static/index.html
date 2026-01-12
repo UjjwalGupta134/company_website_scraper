@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>
-    <h2>Company Website Scraper</h2>
-    <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
-  </title>
+  <title>Company Website Scraper</title>
 <style>
   :root {
   --bg: #f4f6f8;
@@ -143,6 +140,9 @@ a {
 <body>
   <div class="container">
     <h2>Company Website Scraper</h2>
+    <button id="themeToggle" class="theme-btn">
+      🌙 Dark Mode
+    </button>
     <input id="url" type="text" placeholder="Enter company website (e.g. stripe.com)" />
     <button type="button" id="scrapeBtn">Scrape</button>
     <div id="error" class="error hidden"></div>
@@ -285,6 +285,7 @@ async function scrape() {
 </script>
 </body>
 </html>
+
 
 
 

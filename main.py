@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -17,14 +17,26 @@ def home():
 
 @app.post("/scrape", response_model=CompanyProfile)
 def scrape(req: ScrapeRequest):
-    soup = fetch_homepage(req.website)
-    return CompanyProfile(
-        website=req.website,
-        company_name=extract_company_name(soup),
-        what_they_do=extract_what_they_do(soup),
-        offerings=extract_offerings(soup),
-        proof_signals=extract_proof_signals(soup),
-        contact_page=extract_contact_page(soup, req.website),
-        careers_page=extract_careers_page(soup, req.website),
-    )
+    try:
+        soup = fetch_homepage(req.website)
+
+        return CompanyProfile(
+            website=req.website,
+            company_name=extract_company_name(soup),
+            what_they_do=extract_what_they_do(soup),
+            offerings=extract_offerings(soup),
+            proof_signals=extract_proof_signals(soup),
+            contact_page=extract_contact_page(soup, req.website),
+            careers_page=extract_careers_page(soup, req.website),
+        )
+
+    except ValueError as e:
+        if str(e) == "BLOCKED_WEBSITE":
+            raise HTTPException(
+                status_code=403,
+                detail="This website blocks automated scrapers"
+            )
+        raise
+
+
 

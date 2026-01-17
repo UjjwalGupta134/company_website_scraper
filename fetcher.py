@@ -22,7 +22,7 @@ HEADERS = {
     "Accept-Language": "en-US,en;q=0.9",
 }
 
-def fetch_homepage(url: str):
+def fetch_homepage(url: str) ->BeautifulSoup:
     response = requests.get(url, headers=headers, timeout=10)
 response.raise_for_status()
 
@@ -33,5 +33,6 @@ if is_blocked_page(html):
 
 soup = BeautifulSoup(html, "html.parser")
 return soup
+
 
 

@@ -232,9 +232,13 @@ async function scrape() {
     result.classList.remove("hidden");
 
   } catch (err) {
-    errorBox.textContent = "Unable to scrape this website.";
-    errorBox.classList.remove("hidden");
-  } finally {
+  loading.classList.add("hidden");
+  button.disabled = false;
+
+  errorBox.textContent =
+    "⚠️ This website blocks automated scrapers. Try public SaaS sites like stripe.com, notion.so, vercel.com.";
+  errorBox.classList.remove("hidden");
+} finally {
     loading.classList.add("hidden");
     button.disabled = false;
   }
@@ -285,6 +289,7 @@ async function scrape() {
 </script>
 </body>
 </html>
+
 
 
 

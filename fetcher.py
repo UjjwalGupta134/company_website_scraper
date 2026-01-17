@@ -1,6 +1,18 @@
 import requests
 from bs4 import BeautifulSoup
 
+def is_blocked_page(html: str) -> bool:
+    block_signatures = [
+        "cf-challenge",
+        "cloudflare",
+        "attention required",
+        "captcha",
+        "verify you are human"
+    ]
+    html_lower = html.lower()
+    return any(sig in html_lower for sig in block_signatures)
+
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -11,11 +23,15 @@ HEADERS = {
 }
 
 def fetch_homepage(url: str):
-    response = requests.get(
-        url,
-        headers=HEADERS,
-        timeout=15,
-        allow_redirects=True
-    )
-    response.raise_for_status()
-    return BeautifulSoup(response.text, "html.parser")
+    response = requests.get(url, headers=headers, timeout=10)
+response.raise_for_status()
+
+html = response.text
+
+if is_blocked_page(html):
+    raise ValueError("BLOCKED_WEBSITE")
+
+soup = BeautifulSoup(html, "html.parser")
+return soup
+
+
